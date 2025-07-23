@@ -1,0 +1,73 @@
+1. live_capture_gan _svm
+    Hybrid NIDS with One-Class SVM and GAN Discriminator
+
+This script implements a real-time hybrid Network Intrusion Detection System (NIDS) capable of detecting both known and unknown attacks in network traffic. It integrates multiple detection strategies: signature-based filtering, flooding detection, One-Class SVM anomaly detection, and GAN-based validation.
+
+Core Components and Functionalities:
+
+Packet Capture
+Supports both live traffic capture (via Scapy's sniff) and offline .pcap file analysis (via rdpcap).
+
+Feature Extraction
+Extracts key features from each packet including length, protocol number, source IP, destination IP, and timestamp.
+
+Signature-Based Detection
+Quickly identifies benign packets using protocol-specific size rules.
+
+Flood Detection
+Monitors packet rates per destination and protocol over a sliding time window to detect DoS-style flooding behavior.
+
+Anomaly Detection using One-Class SVM
+Detects statistical anomalies in traffic using a trained One-Class SVM model. Packet features are scaled using a standard scaler before classification.
+
+False Positive Filtering via GAN Discriminator
+If a packet is marked anomalous, a trained GAN discriminator model is used to validate the anomaly and reduce false positives.
+
+Attack Classification and Mitigation Guidance
+Malicious packets are mapped to specific attack types such as TCP SYN Flood, UDP Flood, or ICMP Anomaly. Suggested mitigation strategies are provided for each.
+
+Logging and Reporting
+Each packet is logged with its features, classification result, GAN score, and any associated attack information. Results are saved as CSV files with timestamped filenames.
+
+Safety Scoring
+Calculates an overall safety score based on the proportion of malicious packets and uncommon protocol usage in the traffic.
+
+Visualization
+Generates histograms and bar plots to visualize packet length distribution, protocol usage, and benign vs. malicious traffic classification.
+
+Requirements:
+
+A trained One-Class SVM model (model1.pkl)
+
+Corresponding scaler (scaler1.pkl)
+
+A GAN discriminator model (gan_discriminator.h5)
+
+This system is suitable for lightweight real-time deployment and offline traffic analysis. It is modular and can be easily extended with additional detection logic or visualization tools.
+
+2. training_model_svm
+   One-Class SVM Training Script for NIDS
+
+This script generates synthetic benign network traffic data and trains a One-Class SVM model to detect anomalies. It simulates realistic packet lengths and protocol distributions for common protocols (ICMP, TCP, UDP) and uses this data to create a baseline of normal behavior.
+
+Functionality Overview:
+
+Data Simulation:
+
+Generates 500 samples of packet lengths drawn from a normal distribution (mean = 100, std = 20).
+
+Randomly assigns protocol numbers (1 = ICMP, 6 = TCP, 17 = UDP) to mimic realistic traffic.
+
+Feature Scaling:
+
+Standardizes the features using StandardScaler to normalize the input before training.
+
+Model Training:
+
+Trains a One-Class SVM using RBF kernel with gamma='auto' and nu=0.05 to model the benign behavior.
+
+Model Saving:
+
+Saves the trained One-Class SVM model (model1.pkl) and the associated scaler (scaler1.pkl) into a model/ directory using joblib.
+
+The generated model and scaler are used later in the NIDS system for anomaly detection on real or captured packet data.
