@@ -1,0 +1,38 @@
+1. Train_model1.py contains the code of isolation forest training for anomaly detection.
+2. final_code_for_gan_training contains the code for the training of GAN, it has to be trained separately on Google Collab so that we may 
+   import the trained models in .h5.
+
+3. production run 3
+    Hybrid NIDS: Real-Time Network Intrusion Detection System
+
+This script implements a real-time hybrid Network Intrusion Detection System (NIDS) that combines multiple detection techniques to identify malicious network activity from live traffic or offline packet captures. It integrates signature-based filtering, flood attack detection, machine learning–based anomaly detection, and GAN-based false positive validation.
+
+Key Functionalities:
+
+Feature extraction: Extracts packet length, protocol, source/destination IP, and timestamp from each packet.
+
+Signature-based detection: Flags packets as benign if they match known safe protocol-size signatures.
+
+Flood detection: Monitors packet rates by destination and protocol to detect high-rate denial-of-service (DoS) attacks.
+
+Anomaly detection: Applies a trained Isolation Forest model to detect statistical outliers in packet features.
+
+GAN discriminator: Validates anomalies by using a GAN discriminator to filter false positives.
+
+Attack classification: Maps flagged packets to known attack types such as TCP SYN Flood, UDP Flood, or ICMP anomalies, and provides mitigation suggestions.
+
+Safety scoring: Calculates a safety score for the captured traffic based on malicious and rare protocol activity.
+
+Visualization: Generates graphs for packet length distribution, protocol usage, and classification outcomes.
+
+Logging: Saves a CSV log of all captured packets with classification, attack type, and other metadata.
+
+Firewall command suggestions: Recommends Windows firewall or network commands for mitigating detected threats.
+
+Dependencies:
+
+Requires trained models: model.pkl for Isolation Forest and gan_discriminator.h5 for GAN validation.
+
+Uses Scapy for packet capture, Pandas for data handling, and Seaborn/Matplotlib for plotting.
+
+The system supports both live packet sniffing via the "Wi-Fi" interface and offline .pcap file analysis. All detection logic, scoring, and visual output are handled automatically based on user selection.
